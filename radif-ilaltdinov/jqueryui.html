@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/all.css">
+    <style>
+        #draggable, #resizable{
+            width: 300px;
+            height: 300px;
+            background-color: rebeccapurple;
+            border: 1px solid blue;
+        }
+        #parent-draggable{
+            height: 500px;
+            width: 500px;
+            border: 1px solid #000;
+        }
+        #product, #product1{
+            width: 200px;
+            height: 150px;
+            background-color: bisque;
+        }
+        #droppable{
+            width: 400px;
+            height: 300px;
+            border: 1px solid #000;
+        }
+        #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+        #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+        #sortable li span { position: absolute; margin-left: -1.3em; }
+    </style>
+</head>
+<body>
+<div id="parent-draggable">
+    <div id="draggable"></div>
+</div>
+<button id="btn1">Получить containment</button>
+<button id="btn2">Удалить containment</button>
+<button id="btn3">Назначить containment</button>
+<hr>
+<hr>
+<hr>
+<button id="btn4">Enable</button>
+<button id="btn5">Disable</button>
+<button id="btn6">Destroy</button>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<h2>Drag&Drop</h2>
+<div id="product" data-id="123">Mouse</div>
+<div id="product1" data-id="124">Notebook</div>
+<div id="droppable"></div>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<div class="ui-widget">
+    <label for="tags">Tags: </label>
+    <input id="tags">
+</div>
+<input type="text" id="date1">
+<hr>
+<hr>
+<hr>
+<hr>
+<div id="resizable"></div>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<ul id="sortable">
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
+    <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+</ul>
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(() => {
+        $('#draggable').draggable({
+            // axis: 'x' // 'y' ограничение оси перемещения
+            // revert: true // возвращение на исходную позицию
+            // containment: 'parent' // ограничение родителем
+            containment: '#parent-draggable'
+        });
+        $('#draggable').resizable();
+        $('#btn1').click(() => {
+            // Getter
+            console.log($('#draggable').draggable('option', 'containment'))
+        });
+        $('#btn2').click(() => {
+            // Setter
+            $('#draggable').draggable('option', 'containment', false);
+        });
+        $('#btn3').click(() => {
+            // Setter
+            $('#draggable').draggable('option', 'containment', 'parent');
+        });
+
+        //Action
+        $('#btn4').click(() => {
+            $('#draggable').draggable('enable');
+        });
+        $('#btn5').click(() => {
+            $('#draggable').draggable('disable');
+        });
+        $('#btn6').click(() => {
+            $('#draggable').draggable('destroy');
+        });
+
+
+        //Drag & Drop
+        $('#product').draggable({
+            revert: true
+        });
+        $('#product1').draggable({
+            revert: true
+        });
+
+        $('#droppable').droppable({
+            drop: (event, ui) => {
+                // console.log(event, ui);
+                console.log($(ui.draggable[0]).attr('data-id'));
+                // TODO: cart.addProduct($(ui.draggable[0]).attr('data-id'))
+            }
+        });
+
+        // resizable
+        $('#resizable').resizable({
+            // animate: true //анимация изменения размера
+            // maxWidth: 600,
+            // maxHeight: 600,
+            // minHeight
+            // alsoResize: '#draggable'
+        });
+
+        //sortable
+        $( "#sortable" ).sortable();
+        $( "#sortable" ).disableSelection();
+
+        let availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+        ];
+
+        $( "#tags" ).autocomplete({
+            source: availableTags
+        });
+
+        //Datepicker
+        $('#date1').datepicker({
+            // dayNamesMin: ['Вс', 'Пн']
+            // monthNames: ['Январь',]
+            dateFormat: 'dd.mm.yyyy'
+        });
+    })
+</script>
+</body>
+</html>
