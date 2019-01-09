@@ -1,1 +1,1 @@
-# JavaScriptProfessionalProject
+# JavaScriptProfessional
