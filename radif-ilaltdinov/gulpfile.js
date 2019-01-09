@@ -1,125 +1,93 @@
-var gulp = require('gulp');
+let gulp = require('gulp'), //Подключаем сам gulp
+  sass = require('gulp-sass'), // Компиляция sass в css
+  uglifyJs = require('gulp-uglifyes'), // Минификация js
+  autoPrefixer = require('gulp-autoprefixer'), // Вендорные префиксы
+  concat = require('gulp-concat'), // Конкатенация файлов
+  bs = require('browser-sync'), // Server
+  htmlMin = require('gulp-htmlmin'), // Минификация html
+  rename = require('gulp-rename'), // Rename
+  delFiles = require('del'), // Delete files
+  cssMinify = require('gulp-csso'), // Css minify
+  babel = require('gulp-babel'), // Babel
+  pug = require('gulp-pug'); // Pug
 
-gulp.task('hello', function() {
-  console.log('Hello, World!');
+// Методы
+// gulp.task() - создание новой задачи
+// gulp.src() - получение файлов
+// gulp.dest() - сохранение файлов
+// gulp.series() - запуск задач по порядку (по порядку аргументов)
+// gulp.parallel() - запуск задач параллельно
+// gulp.watch() - следит за файлами
+
+gulp.task('test', () => {
+  return console.log('Gulp works!');
 });
 
-gulp.task('task-name', function () {
-  return gulp.src('source-files')   // получаем источники с помощью gulp.src
-    .pipe(aGulpPlugin())             // прогоняем их через плагин
-    .pipe(gulp.dest('destination')) // выходные файлы в папке destination
+gulp.task('html', () => {
+  return gulp.src('app/html/index.html', 'app/html/checkout.html', 'app/html/product.html', 'app/html/shopping-cart.html', 'app/html/single-page.html') // Выбираем файлы
+    .pipe(htmlMin({collapseWhitespace: true})) // 1 обработка: минифицируем файл
+    .pipe(gulp.dest('dist')); // 2 обработка: сохраняем файл
 });
 
-// подключаем gulp-sass
-var sass = require('gulp-sass');
-
-// gulp.task('sass-compile', function(){
-//   return gulp.src('app/scss/styles.scss')
-//     .pipe(sass()) // Конвертируем Sass в CSS с помощью gulp-sass
-//     .pipe(gulp.dest('app/css'))
-// });
-
-// gulp.task('sass-compile', function() {
-//   return gulp.src('app/scss/**/*.scss') // Получаем все файлы с окончанием .scss в папке app/scss и дочерних директориях
-//     .pipe(sass())
-//     .pipe(gulp.dest('app/css'))
-// });
-
-gulp.task('sass', function() {
-  return gulp.src('app/scss/**/*.scss')
-    .pipe(sass())
-    .pipe(gulp.dest('app/css'))
-    .pipe(browserSync.reload({
-      stream: true
+gulp.task('pug', () => {
+  // return gulp.src(['app/pug/*.pug', 'app/templates/*.pug'])
+  return gulp.src('app/pug/*.pug')
+    .pipe(pug({
+      pretty: true
     }))
+    .pipe(gulp.dest('dist/templates'))
+});
+gulp.task('clear', () => {
+  return delFiles(['dist/**', 'dist/**/*.*', '!dist']) //удалит все файлы и все папки (кроме папки dist)
+});
+gulp.task('sass', () => {
+  // return gulp.src('app/sass/**/*.+(scss|sass)');      //return gulp.src('app/sass/**/*.scss')
+  // return gulp.src('app/img/**/*.+(jpg|png|gif|svg)');
+  return gulp.src('app/sass/**/*.sass')
+    .pipe(sass())
+    .pipe(autoPrefixer())
+    .pipe(cssMinify())
+    .pipe(gulp.dest('dist/css'))
+});
+gulp.task('js:es6', () => {
+  return gulp.src('app/js/**/*.js')
+    .pipe(uglifyJs())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest('dist/js'))
+});
+gulp.task('babel', () => {
+  return gulp.src('app/js/**/*.js')
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
+    .pipe(rename({
+      suffix: '.es5'
+    }))
+    .pipe(gulp.dest('dist/js'))
 });
 
-// // Gulp watch
-// gulp.task('watch', function(){
-//   gulp.watch('app/scss/**/*.scss', ['sass-compile']);
-// // другие ресурсы
-// });
-
-var browserSync = require('browser-sync');
-
-gulp.task('browserSync', function() {
-  browserSync({
+gulp.task('server', () => {
+  return bs({
+    browser: 'chrome',
     server: {
-      baseDir: 'app'
-    },
+      baseDir: 'dist'
+    }
   })
 });
 
-// gulp.task('watch', ['array', 'of', 'tasks', 'to', 'complete','before', 'watch'], function (){
-//   // ...
-// });
-
-// gulp.task('watch', ['browserSync'], function (){
-//   gulp.watch('app/scss/**/*.scss', ['sass-compile']);
-// // другие ресурсы
-// });
-
-// gulp.task('watch', ['browserSync', 'sass'], function (){
-//   gulp.watch('app/scss/**/*.scss', ['sass']);
-// // другие ресурсы
-// });
-
-
-gulp.task('watch', ['browserSync', 'sass'], function (){
-  gulp.watch('app/scss/**/*.scss', ['sass']);
-// Обновляем браузер при любых изменениях в HTML или JS
-  gulp.watch('app/*.html', browserSync.reload);
-  gulp.watch('app/js/**/*.js', browserSync.reload);
+gulp.task('sass:watch', () => {
+  return gulp.watch('app/sass/**/*.sass', gulp.series('sass', (done) => {
+    bs.reload();
+    done();
+  }))
+});
+gulp.task('js:watch', () => {
+  return gulp.watch('app/js/**/*.js', gulp.series('js:es6', (done) => {
+    bs.reload();
+    done();
+  }))
 });
 
-
-var useref = require('gulp-useref');
-
-gulp.task('useref', function(){
-  var assets = useref.assets();
-  return gulp.src('app/*.html')
-    .pipe(assets)
-    .pipe(assets.restore())
-    .pipe(useref())
-    .pipe(gulp.dest('dist'))
-});
-
-// // другие подключения...
-// var uglify = require('gulp-uglify');
-// gulp.task('useref', function(){
-//   var assets = useref.assets();
-//   return gulp.src('app/*.html')
-//     .pipe(assets)
-//     .pipe(uglify())
-//     .pipe(assets.restore())
-//     .pipe(useref())
-//     .pipe(gulp.dest('dist'))
-// });
-
-// другие подключения...
-var gulpIf = require('gulp-if');
-gulp.task('useref', function(){
-  var assets = useref.assets();
-  return gulp.src('app/*.html')
-    .pipe(assets)
-    // Если JS, то запускаем uglify()
-    .pipe(gulpIf('*.js', uglify()))
-    .pipe(assets.restore())
-    .pipe(useref())
-    .pipe(gulp.dest('dist'))
-});
-
-
-var minifyCSS = require('gulp-minify-css');
-gulp.task('useref', function(){
-  var assets = useref.assets();
-  return gulp.src('app/*.html')
-    .pipe(assets)
-    // Минифицируем только CSS-файлы
-    .pipe(gulpIf('*.css', minifyCSS()))
-    // Uglifies only if it's a Javascript file
-    .pipe(gulpIf('*.js', uglify()))
-    .pipe(assets.restore())
-    .pipe(useref())
-    .pipe(gulp.dest('dist'))
-});
+gulp.task('default', gulp.series('clear', gulp.parallel('html', 'pug', 'sass', 'js:es6', 'babel'), gulp.parallel('sass:watch', 'server')));
