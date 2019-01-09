@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Эффекты jQuery</title>
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/all.css">
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var $testContainer = $('#test');
+            var $selectEffect = $('#effect');
+
+            $('#btn1').on('click', function () {
+                $testContainer.hide($selectEffect.val(), {}, 2000);
+            });
+
+            $('#btn2').on('click', function () {
+                $testContainer.show($selectEffect.val(), {}, 2000);
+            });
+
+            $('#btn3').on('click', function () {
+                $testContainer.effect($selectEffect.val(), {}, 2000);
+            });
+        });
+    </script>
+    <style>
+        #test{
+            padding: 10px;
+            margin: 10px;
+            font-size: 1.2em;
+            background-color: lightcoral;
+            border: 1px solid orangered;
+        }
+    </style>
+</head>
+<body>
+<div id="test">
+    <h1>Элемент 1</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam, consequuntur enim est harum ipsum iure
+        iusto nobis nostrum odio officia praesentium, quas rem, repellat sed sit voluptate! Accusamus, odit?</p>
+</div>
+<hr>
+<label for="effect">Выберите эффект из списка</label>
+<select name="effect" id="effect">
+    <option value="blind">blind</option>
+    <option value="bounce">bounce</option>
+    <option value="clip">clip</option>
+    <option value="drop">drop</option>
+    <option value="explode">explode</option>
+    <option value="fade">fade</option>
+    <option value="fold">fold</option>
+    <option value="highlight">highlight</option>
+    <option value="puff">puff</option>
+    <option value="pulsate">pulsate</option>
+    <option value="shake">shake</option>
+    <option value="slide">slide</option>
+</select>
+<p>Выберите действие с элементом:</p>
+<button id="btn1">Скрыть элемент</button>
+<button id="btn2">Показать элемент</button>
+<button id="btn3">Применить эффект</button>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homework-6</title>
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/all.css">
+    <style>
+        #product{
+            display: flex;
+            justify-content: space-evenly;
+        }
+        p{
+            margin: 0 0 5px 0;
+        }
+        .product{
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .desc{
+            padding: 15px;
+            border: 1px solid #c0c0c040;
+        }
+        #cart{
+            max-width: 300px;
+        }
+        .cart-item{
+            display: grid;
+            grid-template-rows: 1fr;
+            grid-template-columns: 1fr 1fr 1fr 0.3fr;
+            padding: 10px 0;
+        }
+        .cart-item:not(:first-child){
+            border-top: 1px solid black;
+        }
+        .cart-items-wrap{
+            margin: 20px 0;
+        }
+        .cart-summary{
+            text-align: right;
+        }
+        .product-quantity{
+            text-align: center;
+        }
+        .product-price{
+            text-align: right;
+        }
+        .remove-element{
+            text-align: center;
+            margin-left: 5px;
+            border: red solid 1px;
+            color: red;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .remove-element:hover{
+            color: white;
+            background-color: red;
+        }
+        .json-reviews{
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+        .review-container{
+            padding: 5px;
+            margin: 5px;
+            text-align: center;
+        }
+        .review-author{
+            font-size: 1.1em;
+            color: brown;
+            margin: 0.5em 0;
+        }
+        .review-text{
+            color: indigo;
+        }
+        [data-is-approved="true"] {
+            border: 1px green solid;
+        }
+        [data-is-approved="true"]>.approve-button {
+            display: none;
+            color: red;
+        }
+        [data-is-approved="false"] {
+            border: 1px red solid;
+            opacity: 0.9;
+            background-color: gray;
+        }
+        .wrapper-error{
+            font-size: 0.8em;
+            color: red;
+        }
+        .author-review-button{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div id="cart"></div>
+<hr>
+<div id="product"></div>
+<hr>
+<div id="reviews">
+    <!--<p>Имя:</p>-->
+    <!--<input type="text">-->
+    <!--<p>Отзыв:</p>-->
+    <!--<textarea name="" id="" cols="30" rows="10"></textarea>-->
+    <!--<div id="reviews-json"></div>-->
+</div>
+
+<!--jquery ui-->
+<div id="accordion">
+    <h2><a href="#head1">Заголовок 1</a></h2>
+    <div id="head1">Содержимое 1</div>
+    <h2><a href="#head2">Заголовок 2</a></h2>
+    <div id="head2">Содержимое 2</div>
+</div>
+
+<input id='my-autocomplete' />
+
+<input type='text' id='datepicker' />
+
+<div id="groupradio">
+    <input type="radio" name="radio" id="value1" />
+    <label for="value1">Радиокнопка 1</label>
+    <input type="radio" name="radio" id="value2" />
+    <label for="value2">Радиокнопка 2</label>
+    <input type="radio" name="radio" id="value3" />
+    <label for="value3">Радиокнопка 3</label>
+</div>
+
+<div id="tabs">
+    <ul>
+        <li id="draggable"><a href="#tabs-1">Вкладка 1</a></li>
+        <li><a href="#tabs-2">Вкладка 2</a></li>
+        <li><a href="#tabs-3">Вкладка 3</a></li>
+    </ul>
+    <div id="tabs-1">
+        <p>Содержимое вкладки 1</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. At dolor exercitationem fugiat hic illum inventore
+            iste magnam magni odio officia omnis, perferendis perspiciatis quaerat, quibusdam quis sunt suscipit vero
+            voluptatibus!</p>
+    </div>
+    <div id="tabs-2">
+        <p>Содержимое вкладки 2.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi ex iure omnis sit vitae. Accusantium
+            aperiam beatae dolor iure iusto maiores modi perspiciatis, provident qui quidem quis quo, soluta
+            veritatis?</p>
+    </div>
+    <div id="tabs-3">
+        <p>Содержимое вкладки 3.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt ex nemo numquam quaerat! Asperiores aut
+            ducimus facere laboriosam natus nesciunt obcaecati officiis perspiciatis qui quibusdam quidem, rem sequi
+            unde voluptate.</p>
+    </div>
+</div>
+
+<!--<div id="dialog" title="Заголовок диалогового окна">-->
+    <!--<p>Содержимое окна.</p>-->
+    <!--<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur beatae commodi, consequatur deserunt dolore-->
+        <!--doloribus et fugiat magni molestiae, odio officia placeat quia quo repellendus rerum temporibus vel velit,-->
+        <!--voluptatibus.</p>-->
+<!--</div>-->
+
+
+<div id="dialog1" title="Заголовок диалогового окна">
+    <p>Содержимое окна.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur beatae commodi, consequatur deserunt dolore
+        doloribus et fugiat magni molestiae, odio officia placeat quia quo repellendus rerum temporibus vel velit,
+        voluptatibus.</p>
+</div>
+
+<div id="dialog2" title="Заголовок диалогового окна">
+    <p>Содержимое окна.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur beatae commodi, consequatur deserunt dolore
+        doloribus et fugiat magni molestiae, odio officia placeat quia quo repellendus rerum temporibus vel velit,
+        voluptatibus.</p>
+</div>
+
+<button id="but1">Первая кнопка</button>
+<button id="but2">Вторая кнопка</button>
+
+<button id="slider"></button>
+
+<button id="but3">Третья кнопка</button>
+<div id="testcontainer"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur debitis modi nostrum
+    nulla. Assumenda corporis, deleniti ea fuga incidunt magni, maiores nam natus, nihil nisi quae quod saepe similique
+    ullam.</p></div>
+
+<button id="but4">1</button>
+<button id="but5">2</button>
+<button id="but6">3</button>
+<button id="but7">4</button>
+
+<div class="el1">
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci blanditiis cum eius explicabo illum incidunt
+        iusto labore laboriosam modi, nihil nobis officiis, quae repellendus veniam vitae! Cupiditate natus nostrum
+        obcaecati!</p>
+</div>
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="Product.js"></script>
+<script src="Cart.js"></script>
+<script src="Reviews.js"></script>
+<script src="main.js"></script>
+
+</body>
+</html>
