@@ -24,7 +24,7 @@ $(document).ready(() => {
       margin: 1500,
       autoplay: true,
       autoplaySpeed: 3000,
-      smartSpeed: 3000,
+      smartSpeed: 500,
     });
 
     $('.owl-next').click(event => {
